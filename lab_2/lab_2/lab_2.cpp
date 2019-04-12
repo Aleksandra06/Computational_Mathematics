@@ -94,7 +94,7 @@ int main() {
 	int k;
 	k = (int)n + 1;
 	int fl;
-	cout << "МПИ/Зельделя (0/1): ";
+	cout << "МПИ/Зейделя (0/1): ";
 	cin >> fl;
 
 	double **X;
@@ -219,7 +219,7 @@ void CX(double *cx, double **X, int i) {
 	{
 		cx[m] = 0;
 		for (int k = 0; k < M; k++) {
-			cx[m] = cx[m] + X[k][i] * C[m][k];
+			cx[m] = cx[m] + X[k][i] * C[k][m];
 		}
 	}
 }
@@ -233,20 +233,26 @@ int iter(double **X) {
 		CX(cx, X, i-1);
 		for (int j = 0; j < M; j++) {
 			X[j][i] = B[j] - cx[j];
-			/*cout << X[j][i] << endl;
-			cout << X[0][i] - X[0][i - 1] << endl;*/
+			/*cout << "cx=" << cx[j] << endl;
+			cout << X[j][i] << endl;*/
+			//cout << X[0][i] - X[0][i - 1] << endl;
 		}
 		//cout << "X-X " << abs(X[0][i]) - abs(X[0][i - 1]) << endl;
 	} while (abs(abs(X[0][i]) - abs(X[0][i - 1])) > eps);
 	return i;
 }
 
-
 void Zeidel(double **X, int i) {
 	for (int l = 0; l < M; l++) {
-		for (int j = 0; j < M; j++) {
-			X[l][i] = X[l][i] + X[j][i - 1] * C[l][j];
+		for (int j = 0; j < l; j++) {
+			X[l][i] = X[l][i] + C[j][l] * X[j][i];
+			cout << "X1=" << C[j][l] << endl;
+		}
+		for (int j = l; j < M; j++) {
+			X[l][i] = X[l][i] + C[j][l] * X[j][i - 1];
+			cout << "X2=" << C[j][l] << endl;
 		}
 		X[l][i] = B[l] - X[l][i];
+		cout << endl;
 	}
 }
