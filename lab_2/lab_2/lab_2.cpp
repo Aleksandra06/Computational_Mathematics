@@ -246,11 +246,11 @@ void Zeidel(double **X, int i) {
 	for (int l = 0; l < M; l++) {
 		for (int j = 0; j < l; j++) {
 			X[l][i] = X[l][i] + C[j][l] * X[j][i];
-			cout << "X1=" << C[j][l] << endl;
+			//cout << "X1=" << C[j][l] << endl;
 		}
 		for (int j = l; j < M; j++) {
 			X[l][i] = X[l][i] + C[j][l] * X[j][i - 1];
-			cout << "X2=" << C[j][l] << endl;
+			//cout << "X2=" << C[j][l] << endl;
 		}
 		X[l][i] = B[l] - X[l][i];
 		cout << endl;
