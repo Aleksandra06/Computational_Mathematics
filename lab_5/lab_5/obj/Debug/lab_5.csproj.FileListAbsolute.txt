@@ -1,0 +1,10 @@
+D:\study\Computational_Mathematics\Computational_Mathematics\lab_5\lab_5\bin\Debug\lab_5.exe.config
+D:\study\Computational_Mathematics\Computational_Mathematics\lab_5\lab_5\bin\Debug\lab_5.exe
+D:\study\Computational_Mathematics\Computational_Mathematics\lab_5\lab_5\bin\Debug\lab_5.pdb
+D:\study\Computational_Mathematics\Computational_Mathematics\lab_5\lab_5\obj\Debug\lab_5.csprojAssemblyReference.cache
+D:\study\Computational_Mathematics\Computational_Mathematics\lab_5\lab_5\obj\Debug\lab_5.Form1.resources
+D:\study\Computational_Mathematics\Computational_Mathematics\lab_5\lab_5\obj\Debug\lab_5.Properties.Resources.resources
+D:\study\Computational_Mathematics\Computational_Mathematics\lab_5\lab_5\obj\Debug\lab_5.csproj.GenerateResource.cache
+D:\study\Computational_Mathematics\Computational_Mathematics\lab_5\lab_5\obj\Debug\lab_5.csproj.CoreCompileInputs.cache
+D:\study\Computational_Mathematics\Computational_Mathematics\lab_5\lab_5\obj\Debug\lab_5.exe
+D:\study\Computational_Mathematics\Computational_Mathematics\lab_5\lab_5\obj\Debug\lab_5.pdb
