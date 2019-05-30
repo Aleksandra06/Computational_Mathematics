@@ -3,7 +3,7 @@
 
 using namespace std;
 
-double eps = 0.00000001;
+double eps = 0.01;
 
 double fun(double);
 double bissection(double, double);

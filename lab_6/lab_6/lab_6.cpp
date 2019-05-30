@@ -4,7 +4,7 @@
 using namespace std;
 
 const double H = 0.1;
-const double eps = 0.00000001;
+const double eps = 0.0001;
 double a = 1;
 double b = 2;
 
@@ -29,6 +29,7 @@ int main()
 	int i = 2;
 	cout << "Шаг 1" << endl;
 	cout << "I = " << t2 << endl;
+	cout << "h = " << h << endl;
 	do {
 		tmp = t2;
 		t2 = t1;
@@ -38,15 +39,19 @@ int main()
 		cout << "Шаг " << i << endl;
 		i++;
 		cout << "I = " << t2 << endl;
-	} while (abs(t1 - t2) > eps);
+		cout << "h = " << h << endl;
+	} while (abs(t1 - t2) > 3*eps);
 	cout << "Eусеч <= " << trapeze_toch_ucech(a, b, h) << endl;
 	cout << "Eокр <= " << trapeze_toch_okr(a, b) << endl;
 
 	cout << endl;
+	h = H;
+	cout << "Симпсона: " << endl;
 	i = 2;
 	t2 = simpson(a, b, H);
 	cout << "Шаг 1" << endl;
 	cout << "I = " << t2 << endl;
+	cout << "h = " << h << endl;
 	do {
 		tmp = t2;
 		t2 = t1;
@@ -56,7 +61,8 @@ int main()
 		cout << "Шаг " << i << endl;
 		i++;
 		cout << "I = " << t2 << endl;
-	} while (abs(t1 - t2) > eps);
+		cout << "h = " << h << endl;
+	} while (abs(t1 - t2) > 3*eps);
 	cout << "Eусеч <= " << simpson_toch_ucech(a, b, h) << endl;
 	cout << "Eокр <= " << simpson_toch_okr(a, b) << endl;
 	return 0;
@@ -76,8 +82,9 @@ double f5(double a) {
 
 double trapeze(double a, double b, double h) {
 	double otv = 0;
-	for (double i = a + h; i < b; i += h) {
-		otv += f(i);
+	int ld = (b - a) / h + 1;
+	for (int i = 1; i <= ld; i++) {
+		otv += f(a + h * (i + 1));
 	}
 	otv += (f(a) + f(b)) / 2;
 	otv = otv * h;
@@ -87,8 +94,9 @@ double trapeze(double a, double b, double h) {
 double trapeze_toch_ucech(double a, double b, double h) {
 	double toch = 0, M;
 	M = f(a);
-	for (double i = a + h; i <= b; i += h) {
-		if (M < f3(i)) M = f3(i);
+	int ld = (b - a) / h + 1;
+	for (int i = 1; i <= ld; i++) {
+		if (M < f3(a+h*(i+1))) M = f3(a + h * (i + 1));
 	}
 	toch = pow(h, 2) / 12 * (b - a)*M;
 	return toch;
