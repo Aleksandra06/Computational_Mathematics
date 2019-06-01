@@ -14,9 +14,20 @@ namespace lab_8
     {
         int XX, YY;
         int centerX, centerY, one;
-        
+
+        const int N = 3;
         const int n = 4;
-        //const int X = 5;
+        double[] X = { 0, 1, 2, 3};
+        double[] Y;
+        double[,] C;
+        double[] B;
+        //double y, x;
+
+        double[,] matrix;
+        double[] otvet;
+        double[] buff;
+        double[,] f;
+        int alfa;
 
         public Form1()
         {
@@ -26,146 +37,14 @@ namespace lab_8
             centerX = (int)XX / 2;
             centerY = (int)YY / 2;
             one = (int)centerX / 10;
-        }
 
-        void GAUS(double[,] Matrix, int N, int M, double[] MassM, int G)
-        {
-
-            //Приведение матрицы к треугольному виду
-            for (int i = 0; i < M - 2; i++)
-            {
-                //Вставка Максимального по модулю элемента на диагональ
-                //SearchMaxElem(Matrix, N, M, i);
-
-                for (int j = 1; j < N - i; j++)
-                {
-                    //Зануление столбца
-                    Iter(Matrix, M, j, i);
-                }
-            }
-            //Подсчёт корней на обратном ходу
-            Result(Matrix, N, M, MassM, G);
-
-            //return 0;
-        }
-
-        //Зануление выбранного элемента
-        void Iter(double[,] Matrix, int M, int Row, int Coll)
-        {
-            double[] Str = new double[M];
-            double mnoj;
-            //Вычисление множителя для строки
-            mnoj = -1 * (Matrix[Coll + Row,Coll] / Matrix[Coll,Coll]);
-
-            for (int i = 0; i < M; i++)
-            {
-                //Умножение строки с ведущим элементом на множитель
-                Str[i] = Matrix[Coll,i] * mnoj;
-
-                //Сложение строки с ведущим элементом с текущей
-                Matrix[Coll + Row,i] = Matrix[Coll + Row,i] + Str[i];
-            }
-        }
-
-        //Вычисление корней
-        void Result(double[,] Matrix, int N, int M, double[] MassM, int G)
-        {
-            //Кол-во решений
-            int CountX = M - 1;
-            //Кол-во рассматриваемых строк для случая когда строк больше чем корней
-            N = N - (N - CountX);
-            //Массив ответов
-            double[] Answer = new double[CountX];
-            for (int i = 0; i < CountX; i++)
-            {
-                Answer[i] = 0;
-            }
-            bool flag = false;
-            double Summ = 0;
-
-            //Проход по всем строкам
-            for (int j = 0, z = 1; j < CountX; j++, z++)
-            {
-                int Error = 0;
-                //Проход по текущей строке
-                for (int i = 0; i < CountX; i++)
-                {
-                    //Сумма всех изветсных величин
-                    Summ = Summ + (Matrix[N - z,i] * Answer[i] * -1);
-                    if (Matrix[N - z,i] == 0) { Error++; }
-                }
-                if (Error == CountX)
-                {
-                    flag = true;
-                    break;
-                }
-                //Прибавление правой части к сумме
-                Summ = Summ + Matrix[N - z,M - 1];
-                //Деление Суммы на коэффициент корня
-                Answer[CountX - z] = Summ / Matrix[N - z,CountX - z];
-                Summ = 0;
-                Error = 0;
-            }
-
-            if (flag == true) ;//{ cout << "Ne imeet Resheniy ili imeet inf korney"; }
-            else
-            {
-                //Вывод корней на экран
-                for (int i = 0; i < M - 1; i++)
-                {
-                    if ((i != 0) || (i != (G - 1)))
-                    {
-                        MassM[i + 1] = Answer[i];
-                    }
-                }
-            }
-        }
-
-        //Вставка Максимального по модулю элемента на диагональ
-        void SearchMaxElem(double[][] Matrix, int N, int M, int D)
-        {
-            double MaxElem = 0;
-            int MaxColl = 0;
-            int MaxRow = 0;
-
-            //Поиск максимального по модулю элемента
-            for (int i = D; i < N; i++)
-            {
-                for (int j = D; j < M - 1; j++)
-                {
-                    if (Math.Abs(Matrix[i][j]) > Math.Abs(MaxElem))
-                    {
-                        MaxElem = Matrix[i][j];
-                        MaxColl = j;
-                        MaxRow = i;
-                    }
-                }
-            }
-            double temp;
-            //Если элемент лежит не на диагонали
-            if (Matrix[D][D] != MaxElem)
-            {
-                //Если не на том столбце
-                if (MaxColl != D)
-                {
-                    for (int i = 0; i < N; i++)
-                    {
-                        temp = Matrix[i][D];
-                        Matrix[i][D] = Matrix[i][MaxColl];
-                        Matrix[i][MaxColl] = temp;
-                    }
-                }
-                //Если не на той строке
-                if (MaxRow != D)
-                {
-                    for (int i = 0; i < M; i++)
-                    {
-                        temp = Matrix[D][i];
-                        Matrix[D][i] = Matrix[MaxRow][i];
-                        Matrix[MaxRow][i] = temp;
-                    }
-                }
-            }
+            Y = new double[n];
+            C = new double[N,N];
+            B = new double[N];
+            matrix = new double[N, N];
+            otvet = new double[N];
+            buff = new double[N];
+            f = new double[1, 1];
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
@@ -205,7 +84,66 @@ namespace lab_8
             }
         }
 
-        
+        void PoiPeres(int i)
+        {
+            for (int j = i; j < N - 1; j++)
+            {
+                if (matrix[j,i] < 0)
+                {
+                    buff[j] = (-1) * matrix[j,i];
+                }
+                else
+                {
+                    buff[j] = matrix[j,i];
+                }
+            }
+            double Maxbuff;
+            int t;
+            Maxbuff = buff[i];
+            for (t = i; t < N - 1; t++)
+            {
+                if (buff[t] >= Maxbuff)
+                {
+                    Maxbuff = buff[t];
+                    alfa = t;
+                }
+            }
+            if (alfa != i)
+            {
+                int z = i, k;
+                for (k = i; k < N; k++)
+		        {
+                    if (z < N) return;
+                    f[i,i] = matrix[i,z];
+                    matrix[i,z] = matrix[alfa,k];
+                    matrix[alfa,k] = f[i,i];
+                    z++;
+                }
+            }
+        }
+
+        void Gauss()
+        {
+            int i, j, k;
+            double d;
+            for (i = 0; i < N - 2; i++)
+            {
+                PoiPeres(i);
+                for (j = i + 1; j < N - 1; j++)
+                {
+                    d = (matrix[j,i] / matrix[i,i]);
+                    for (k = i; k < N; k++)
+                        matrix[j,k] -= (matrix[i,k] * d);
+                }
+            }
+            otvet[N - 2] = matrix[N - 2,N - 1] / matrix[N - 2,N - 2];
+            for (i = N - 3; i >= 0; i--)
+            {
+                for (j = 0, d = 0; j < N - i - 2; j++)
+                    d += (otvet[N - j - 2] * matrix[i,N - j - 2] * (-1));
+                otvet[i] = (matrix[i,N - 1] + d) / matrix[i,i];
+            }
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -261,128 +199,67 @@ namespace lab_8
             }
         }
 
-        
+        double ChtoY(double i)
+        {
+            double S = otvet[0] + (otvet[1]) * i + (otvet[2]) * i * i;
+            return S;
+        }
 
-        
+        double g(double x, int l)
+        {
+            if (l == 0)
+                return 1;
+            if (l == 1)
+                return (double)Math.Sqrt(x);
+            //if (l == 2)
+             //   return x * x;
+            return 0;
+        }
 
         void apr(PaintEventArgs e)
         {
             int tmpx, tmpy;
-            
-
-            double[] MassX = new double[n];
-
-            MassX[0] = 0;
-            MassX[1] = 1;
-            MassX[2] = 2;
-            MassX[3] = 3;
-
-            //Создание и заполнение массива Y-ов
-            double[] MassY = new double[n];
-
-            MassY[0] = 0;
-            MassY[1] = 1;
-            MassY[2] = 4;
-            MassY[3] = 9;
-
             for (int i = 0; i < n; i++)
             {
-                double tmp = Math.Pow(MassX[i], 2);
-                if ((0 < (int)(centerX + MassX[i] * one) || (int)(centerX + MassX[i] * one) < XX) && ((int)(centerY - (one * Math.Pow(MassX[i], 2))) > 0 || (int)(centerY - (one * Math.Pow(MassX[i], 2))) < YY))
-                    e.Graphics.DrawRectangle(Pens.Black, (int)(centerX + MassX[i] * one), (int)(centerY - (one * Math.Pow(MassX[i], 2))), 1, 1);
+                Y[i] = Math.Pow(X[i], 3);
+                if ((0 < (int)(centerX + X[i] * one) || (int)(centerX + X[i] * one) < XX) && ((int)(centerY - (one * Math.Pow(X[i], 3))) > 0 || (int)(centerY - (one * Math.Pow(X[i], 3))) < YY))
+                    e.Graphics.DrawRectangle(Pens.Black, (int)(centerX + X[i] * one), (int)(centerY - (one * Math.Pow(X[i], 3))), 1, 1);
             }
-
-            double[,] C = new double[3,4];
-
-            for (int i = 0; i < 3; i++)
+            for (int p = 0; p < N; ++p)
             {
-                for (int j = 0; j < 4; j++)
-                {
-                    C[i,j] = 0;
-                }
+                for (int j = 0; j < N; ++j)
+                    C[p,j] = 0;
+                B[p] = 0;
             }
-
-            C[0,2] = 3;
-
-            for (int i = 0; i < 4; i++)
+            for (int p = 0; p < (N - 1); ++p)
+                for (int j = 0; j < (N - 1); ++j)
+                    for (int l = 0; l < n; ++l)
+                        C[p,j] += g(X[l], p) * g(X[l], j);
+            for (int p = 0; p < (N - 1); ++p)
+                for (int j = 0; j < n; ++j)
+                    B[p] += Y[j] * g(X[j], p);
+            for (int i = 0; i < (N - 1); ++i)
             {
-                C[0,1] += MassX[i];
+                matrix[i,N - 1] = B[i];
+                for (int j = 0; j < (N - 1); ++j)
+                    matrix[i,j] = C[i,j];
             }
-
-            for (int i = 0; i < 4; i++)
+            Gauss();
+            /*for (double i = -10; i < 10.1; i++)
             {
-                C[0,0] += Math.Sqrt(MassX[i]);
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                C[1,2] += MassX[i];
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                C[1,1] += MassX[i] * MassX[i];
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                C[1,0] += Math.Sqrt(MassX[i]) * MassX[i];
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                C[2,2] += Math.Sqrt(MassX[i]);
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                C[2,1] += Math.Sqrt(MassX[i]) * MassX[i];
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                C[2,0] += MassX[i];
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                C[0,3] += MassY[i];
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                C[1,3] += MassY[i] * MassX[i];
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                C[2,3] += Math.Sqrt(MassX[i]) * MassY[i];
-            }
-
-            double[] MassM = new double[4];
-            for (int i = 0; i < 4; i++)
-            {
-                MassM[i] = 0;
-            }
-
-            //Решение матрицы
-            GAUS(C, 3, 4, MassM, 4);
-
-
-            double y;
+                y = ChtoY(i);
+            }*/
             Pen pens = new Pen(Color.Red);
-            tmpx = 300; 
-            y = MassM[1] * Math.Sqrt((double)(300 - centerX) / one) + MassM[2] * (double)(300 - centerX) / one + MassM[3];
-            tmpy = Convert.ToInt32(centerY - one * y);
-            for (int i = 301; i < XX; i++)
+            tmpx = 1;
+            tmpy = Convert.ToInt32(centerY - one * ChtoY((double)(1 - centerX) / one));
+            for (int i = 2; i < XX; i++)
             {
-                y = MassM[1] * Math.Sqrt((double)(i - centerX) / one) + MassM[2] * (double)(i - centerX) / one + MassM[3];
-                if ((centerY - one * y <= YY) && (centerY - one * y >= 0))
+                if ((centerY - one * ChtoY((double)(i - centerX) / one) <= YY) && (centerY - one * ChtoY((double)(i - centerX) / one) >= 0))
                 {
-                    e.Graphics.DrawLine(pens, tmpx, tmpy, i, (int)(centerY - (one * y)));
+                    e.Graphics.DrawLine(pens, tmpx, tmpy, i, (int)(centerY - (one * ChtoY((double)(i - centerX) / one))));
                 }
                 tmpx = i;
-                tmpy = (int)(centerY - (one * y));
+                tmpy = (int)(centerY - (one * ChtoY((double)(i - centerX) / one)));
 
             }
         }

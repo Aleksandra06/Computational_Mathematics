@@ -8,3 +8,13 @@ D:\study\Computational_Mathematics\Computational_Mathematics\lab_8\lab_8\obj\Deb
 D:\study\Computational_Mathematics\Computational_Mathematics\lab_8\lab_8\obj\Debug\lab_8.csproj.CoreCompileInputs.cache
 D:\study\Computational_Mathematics\Computational_Mathematics\lab_8\lab_8\obj\Debug\lab_8.exe
 D:\study\Computational_Mathematics\Computational_Mathematics\lab_8\lab_8\obj\Debug\lab_8.pdb
+D:\Computational_Mathematics\lab_8\lab_8\bin\Debug\lab_8.exe.config
+D:\Computational_Mathematics\lab_8\lab_8\bin\Debug\lab_8.exe
+D:\Computational_Mathematics\lab_8\lab_8\bin\Debug\lab_8.pdb
+D:\Computational_Mathematics\lab_8\lab_8\obj\Debug\lab_8.csprojAssemblyReference.cache
+D:\Computational_Mathematics\lab_8\lab_8\obj\Debug\lab_8.Form1.resources
+D:\Computational_Mathematics\lab_8\lab_8\obj\Debug\lab_8.Properties.Resources.resources
+D:\Computational_Mathematics\lab_8\lab_8\obj\Debug\lab_8.csproj.GenerateResource.cache
+D:\Computational_Mathematics\lab_8\lab_8\obj\Debug\lab_8.csproj.CoreCompileInputs.cache
+D:\Computational_Mathematics\lab_8\lab_8\obj\Debug\lab_8.exe
+D:\Computational_Mathematics\lab_8\lab_8\obj\Debug\lab_8.pdb
