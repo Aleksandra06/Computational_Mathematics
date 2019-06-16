@@ -16,7 +16,7 @@ namespace lab_8
         int centerX, centerY, one;
         bool plus = true;
 
-        const int N = 4;
+        const int N = 3;
         int n;
 
         double[,] matrix;
@@ -36,6 +36,14 @@ namespace lab_8
             centerX = (int)XX / 2;
             centerY = (int)YY / 2;
             one = (int)centerX / 10;
+
+
+
+            input();
+            init_value();
+            fill_matrix();
+            gaus(N, N + 1);
+            print_a();
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
@@ -131,10 +139,10 @@ namespace lab_8
 
         private double f(double x)
         {
-            return x * x;
+            //return x * x;
             //return Math.Sqrt(x);
             //return x;
-            // return Math.Exp(x);
+             return Math.Exp(x);
         }
 
         private double g(int r, double x)
@@ -143,7 +151,7 @@ namespace lab_8
             gi[1] = x;
             gi[2] = Math.Sqrt(x);
             //for (int i = 2; i < N; i++) { gi[i] = gi[i - 1] * x; }
-            gi[3] = Math.Exp(x);
+           // gi[3] = Math.Exp(x);
             return gi[r];
         }
 
@@ -322,11 +330,6 @@ namespace lab_8
                     e.Graphics.DrawRectangle(Pens.Black, (int)(centerX + xi[i] * one), (int)(centerY - (one * f(xi[i]))), 1, 1);
             }
 
-            input();
-            init_value();
-            fill_matrix();
-            gaus(N, N + 1);
-
             Pen pens = new Pen(Color.Green);
             double y;
             tmpx = 1;
@@ -368,6 +371,14 @@ namespace lab_8
                 tmpx = i;
                 tmpy = (int)(centerY - (one * y));
 
+            }
+        }
+
+        void print_a()
+        {
+            label1.Text = "";
+            for (int i = 0; i < N; i++) {
+                label1.Text += " " + String.Format("{0, 7:0.0000}", a[i]);
             }
         }
     }
