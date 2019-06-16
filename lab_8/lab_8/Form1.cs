@@ -14,20 +14,19 @@ namespace lab_8
     {
         int XX, YY;
         int centerX, centerY, one;
+        bool plus = true;
 
-        const int N = 3;
-        const int n = 4;
-        double[] X = { 0, 1, 2, 3};
-        double[] Y;
-        double[,] C;
-        double[] B;
-        //double y, x;
+        const int N = 4;
+        int n;
 
         double[,] matrix;
-        double[] otvet;
-        double[] buff;
-        double[,] f;
-        int alfa;
+        double[] a;
+        double[,] c;
+        double[] b;
+
+        double x0 = 0, xn;
+        double[] xi, yi, gi;
+        double h;
 
         public Form1()
         {
@@ -37,14 +36,6 @@ namespace lab_8
             centerX = (int)XX / 2;
             centerY = (int)YY / 2;
             one = (int)centerX / 10;
-
-            Y = new double[n];
-            C = new double[N,N];
-            B = new double[N];
-            matrix = new double[N, N];
-            otvet = new double[N];
-            buff = new double[N];
-            f = new double[1, 1];
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
@@ -82,68 +73,7 @@ namespace lab_8
                 g.Graphics.DrawRectangle(Pens.Black, centerX, i, 2, 1);
                 g.Graphics.DrawString(((centerY - i) / one).ToString(), myfont1, Brushes.Black, new Point(centerX, i));
             }
-        }
-
-        void PoiPeres(int i)
-        {
-            for (int j = i; j < N - 1; j++)
-            {
-                if (matrix[j,i] < 0)
-                {
-                    buff[j] = (-1) * matrix[j,i];
-                }
-                else
-                {
-                    buff[j] = matrix[j,i];
-                }
-            }
-            double Maxbuff;
-            int t;
-            Maxbuff = buff[i];
-            for (t = i; t < N - 1; t++)
-            {
-                if (buff[t] >= Maxbuff)
-                {
-                    Maxbuff = buff[t];
-                    alfa = t;
-                }
-            }
-            if (alfa != i)
-            {
-                int z = i, k;
-                for (k = i; k < N; k++)
-		        {
-                    if (z < N) return;
-                    f[i,i] = matrix[i,z];
-                    matrix[i,z] = matrix[alfa,k];
-                    matrix[alfa,k] = f[i,i];
-                    z++;
-                }
-            }
-        }
-
-        void Gauss()
-        {
-            int i, j, k;
-            double d;
-            for (i = 0; i < N - 2; i++)
-            {
-                PoiPeres(i);
-                for (j = i + 1; j < N - 1; j++)
-                {
-                    d = (matrix[j,i] / matrix[i,i]);
-                    for (k = i; k < N; k++)
-                        matrix[j,k] -= (matrix[i,k] * d);
-                }
-            }
-            otvet[N - 2] = matrix[N - 2,N - 1] / matrix[N - 2,N - 2];
-            for (i = N - 3; i >= 0; i--)
-            {
-                for (j = 0, d = 0; j < N - i - 2; j++)
-                    d += (otvet[N - j - 2] * matrix[i,N - j - 2] * (-1));
-                otvet[i] = (matrix[i,N - 1] + d) / matrix[i,i];
-            }
-        }
+        }     
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -199,21 +129,188 @@ namespace lab_8
             }
         }
 
-        double ChtoY(double i)
+        private double f(double x)
         {
-            double S = otvet[0] + (otvet[1]) * i + (otvet[2]) * i * i;
-            return S;
+            return x * x;
+            //return Math.Sqrt(x);
+            //return x;
+            // return Math.Exp(x);
         }
 
-        double g(double x, int l)
+        private double g(int r, double x)
         {
-            if (l == 0)
-                return 1;
-            if (l == 1)
-                return (double)Math.Sqrt(x);
-            //if (l == 2)
-             //   return x * x;
+            gi[0] = 1;
+            gi[1] = x;
+            gi[2] = Math.Sqrt(x);
+            //for (int i = 2; i < N; i++) { gi[i] = gi[i - 1] * x; }
+            gi[3] = Math.Exp(x);
+            return gi[r];
+        }
+
+        private void input()
+        {
+            x0 = 0;
+            xn = 3;
+            h = 1;
+            n = (int)((xn - x0) / h) + 1;
+        }
+
+        private void init_value()
+        {
+            xi = new double[n];
+            yi = new double[n];
+            gi = new double[N];
+
+            for (int i = 0; i < n; i++)
+            {
+                xi[i] = x0 + h * i;
+                yi[i] = f(xi[i]);
+            }
+        }
+
+        private double[,] fill_matrix()
+        {
+            matrix = new double[N, N + 1];
+
+            init_c_b();
+            fill_c();
+            fill_b();
+            fill_matrix_cb();
+
+            return matrix;
+        }
+
+        private void init_c_b()
+        {
+            c = new double[N, N];
+            b = new double[N];
+
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                {
+                    c[i, j] = 0;
+                }
+                b[i] = 0;
+            }
+        }
+
+        private double[,] fill_c()
+        {
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                {
+                    for (int k = 0; k < N; k++)
+                    {
+                        c[i, j] += g(i, xi[k]) * g(j, xi[k]);
+                    }
+                }
+            }
+            return c;
+        }
+
+        private double[] fill_b()
+        {
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                {
+                    b[i] += g(i, xi[j]) * f(xi[j]);
+                }
+            }
+            return b;
+        }
+
+        private double[,] fill_matrix_cb()
+        {
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                {
+                    matrix[i, j] = c[i, j];
+                }
+                matrix[i, N] = b[i];
+            }
+            return matrix;
+        }
+
+        private int gaus(int n, int m)
+        {
+            double coef;
+
+            for (int j = 0; j < m - 1; j++)
+            {
+                swap(j, n, m);
+                for (int i = j + 1; i < n; i++)
+                {
+                    coef = matrix[i, j] / matrix[j, j];
+                    for (int k = 0; k < m; k++)
+                    {
+                        matrix[i, k] -= matrix[j, k] * coef;
+                    }
+                }
+            }
+            root(n, m);
             return 0;
+        }
+
+        private int swap(int number_swap, int n, int m)
+        {
+            int number_max = 0;
+            double max = 0.0, tmp;
+
+            for (int i = number_swap; i < n; i++)
+            {
+                if (Math.Abs(max) < Math.Abs(matrix[i, number_swap]))
+                {
+                    max = matrix[i, number_swap];
+                    number_max = i;
+                }
+            }
+
+            for (int k = 0; k < m; k++)
+            {
+                tmp = matrix[number_swap, k];
+                matrix[number_swap, k] = matrix[number_max, k];
+                matrix[number_max, k] = tmp;
+            }
+            return 0;
+        }
+
+        private int root(int n, int m)
+        {
+            a = new double[N];
+            for (int i = 0; i < N; i++)
+            {
+                a[i] = 0;
+            }
+
+            int row = n - 1, column = m - 1;
+            double sum = 0;
+
+            for (int i = row, r = column - 1; r > -1; i--, r--)
+            {
+                sum = 0;
+                for (int j = column - 1; j > i; j--)
+                {
+                    sum += matrix[i, j] * a[j];
+                }
+                a[r] = (matrix[i, column] - sum) / matrix[i, i];
+            }
+            return 0;
+        }
+
+        private double g_graphic(double x)
+        {
+            double y = 0;
+
+            for (int i = 0; i < N; i++)
+            {
+                double q = a[i];
+                y += a[i] * g(i, x);
+            }
+            return y;
         }
 
         void apr(PaintEventArgs e)
@@ -221,45 +318,55 @@ namespace lab_8
             int tmpx, tmpy;
             for (int i = 0; i < n; i++)
             {
-                Y[i] = Math.Pow(X[i], 3);
-                if ((0 < (int)(centerX + X[i] * one) || (int)(centerX + X[i] * one) < XX) && ((int)(centerY - (one * Math.Pow(X[i], 3))) > 0 || (int)(centerY - (one * Math.Pow(X[i], 3))) < YY))
-                    e.Graphics.DrawRectangle(Pens.Black, (int)(centerX + X[i] * one), (int)(centerY - (one * Math.Pow(X[i], 3))), 1, 1);
+                if ((0 < (int)(centerX + xi[i] * one) || (int)(centerX + xi[i] * one) < XX) && ((int)(centerY - (one * f(xi[i]))) > 0 || (int)(centerY - (one * f(xi[i]))) < YY))
+                    e.Graphics.DrawRectangle(Pens.Black, (int)(centerX + xi[i] * one), (int)(centerY - (one * f(xi[i]))), 1, 1);
             }
-            for (int p = 0; p < N; ++p)
-            {
-                for (int j = 0; j < N; ++j)
-                    C[p,j] = 0;
-                B[p] = 0;
-            }
-            for (int p = 0; p < (N - 1); ++p)
-                for (int j = 0; j < (N - 1); ++j)
-                    for (int l = 0; l < n; ++l)
-                        C[p,j] += g(X[l], p) * g(X[l], j);
-            for (int p = 0; p < (N - 1); ++p)
-                for (int j = 0; j < n; ++j)
-                    B[p] += Y[j] * g(X[j], p);
-            for (int i = 0; i < (N - 1); ++i)
-            {
-                matrix[i,N - 1] = B[i];
-                for (int j = 0; j < (N - 1); ++j)
-                    matrix[i,j] = C[i,j];
-            }
-            Gauss();
-            /*for (double i = -10; i < 10.1; i++)
-            {
-                y = ChtoY(i);
-            }*/
-            Pen pens = new Pen(Color.Red);
+
+            input();
+            init_value();
+            fill_matrix();
+            gaus(N, N + 1);
+
+            Pen pens = new Pen(Color.Green);
+            double y;
             tmpx = 1;
-            tmpy = Convert.ToInt32(centerY - one * ChtoY((double)(1 - centerX) / one));
+            y = (double)(1 - centerX) / one;
+            y = f((double)(1 - centerX) / one);
+            tmpy = Convert.ToInt32(centerY - one * y);
             for (int i = 2; i < XX; i++)
             {
-                if ((centerY - one * ChtoY((double)(i - centerX) / one) <= YY) && (centerY - one * ChtoY((double)(i - centerX) / one) >= 0))
+                y = f((double)(i - centerX) / one);
+                if ((centerY - one * y <= YY) && (centerY - one * y >= 0))
                 {
-                    e.Graphics.DrawLine(pens, tmpx, tmpy, i, (int)(centerY - (one * ChtoY((double)(i - centerX) / one))));
+                    e.Graphics.DrawLine(pens, tmpx, tmpy, i, (int)(centerY - (one * y)));
                 }
                 tmpx = i;
-                tmpy = (int)(centerY - (one * ChtoY((double)(i - centerX) / one)));
+                tmpy = (int)(centerY - (one * y));
+
+            }
+            pens = new Pen(Color.Red);
+            int start;
+            if (plus == false) {
+                start = 0;
+                tmpx = 1;
+            }
+            else
+            {
+                start = centerX;
+                tmpx = start;
+            }
+            y = (double)(start + 1 - centerX) / one;
+            y = g_graphic((double)(start - centerX) / one);
+            tmpy = Convert.ToInt32(centerY - one * y);
+            for (int i = start + 2; i < XX; i++)
+            {
+                y = g_graphic((double)(i - centerX) / one);
+                if ((centerY - one * y <= YY) && (centerY - one * y >= 0))
+                {
+                    e.Graphics.DrawLine(pens, tmpx, tmpy, i, (int)(centerY - (one * y)));
+                }
+                tmpx = i;
+                tmpy = (int)(centerY - (one * y));
 
             }
         }
