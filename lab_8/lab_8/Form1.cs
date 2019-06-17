@@ -161,6 +161,7 @@ namespace lab_8
             xn = 3;
             h = 1;
             n = (int)((xn - x0) / h) + 1;
+            //label2.Text = n.ToString();
         }
 
         private void init_value()
@@ -174,6 +175,7 @@ namespace lab_8
                 xi[i] = x0 + h * i;
                 yi[i] = f(xi[i]);
             }
+            //label2.Text = yi[n-1].ToString();
         }
 
         private double[,] fill_matrix()
@@ -209,7 +211,7 @@ namespace lab_8
             {
                 for (int j = 0; j < N; j++)
                 {
-                    for (int k = 0; k < N; k++)
+                    for (int k = 0; k < n; k++)
                     {
                         c[i, j] += g(i, xi[k]) * g(j, xi[k]);
                     }
@@ -222,7 +224,7 @@ namespace lab_8
         {
             for (int i = 0; i < N; i++)
             {
-                for (int j = 0; j < N; j++)
+                for (int j = 0; j < n; j++)
                 {
                     b[i] += g(i, xi[j]) * f(xi[j]);
                 }
@@ -327,7 +329,7 @@ namespace lab_8
             for (int i = 0; i < n; i++)
             {
                 if ((0 < (int)(centerX + xi[i] * one) || (int)(centerX + xi[i] * one) < XX) && ((int)(centerY - (one * f(xi[i]))) > 0 || (int)(centerY - (one * f(xi[i]))) < YY))
-                    e.Graphics.DrawRectangle(Pens.Black, (int)(centerX + xi[i] * one), (int)(centerY - (one * f(xi[i]))), 1, 1);
+                    e.Graphics.DrawRectangle(Pens.Black, (int)(centerX + xi[i] * one)-1, (int)(centerY - (one * f(xi[i])))-1, 3, 3);
             }
 
             Pen pens = new Pen(Color.Green);
